@@ -24,7 +24,7 @@ type ToolResult map[string]interface{}
 
 func RegisterTools(mcpServer *server.MCPServer, promptsPath string) {
 	toolFiles := make(map[string][]byte)
-	// 1. Сначала загружаем из встроенных (embed)
+
 	embeddedEntries, err := promptFiles.ReadDir(".")
 	if err != nil {
 		log.Printf("[MCP][ERROR] reading embedded prompts: %v", err)
@@ -41,7 +41,7 @@ func RegisterTools(mcpServer *server.MCPServer, promptsPath string) {
 			toolFiles[entry.Name()] = data
 		}
 	}
-	// 2. Затем (с перекрытием) — из пользовательской папки, если указана
+
 	if promptsPath != "" {
 		userEntries, err := os.ReadDir(promptsPath)
 		if err != nil {
@@ -56,11 +56,11 @@ func RegisterTools(mcpServer *server.MCPServer, promptsPath string) {
 					log.Printf("[MCP][ERROR] reading prompt file %s: %v", entry.Name(), err)
 					continue
 				}
-				toolFiles[entry.Name()] = data // перекрывает встроенный, если совпадает имя
+				toolFiles[entry.Name()] = data
 			}
 		}
 	}
-	// 3. Регистрируем все найденные
+
 	for fileName, data := range toolFiles {
 		toolName := strings.TrimSuffix(fileName, ".json")
 		var tp ToolPrompt
@@ -86,9 +86,7 @@ func makeHandlePromptTool(prompt string) func(context.Context, mcp.CallToolReque
 		if err := decodeParams(request.Params.Arguments, &params); err != nil {
 			return nil, err
 		}
-		// Здесь промпт из файла дополняется сутью запроса пользователя
 		finalPrompt := prompt + "\n---\n" + params.Query
-		// TODO: здесь должна быть логика выполнения промпта (например, отправка в LLM)
 		return wrapResult(ToolResult{"prompt": finalPrompt}), nil
 	}
 }
