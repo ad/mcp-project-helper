@@ -77,9 +77,11 @@ make build
 
 ### VS Code
 
+[![Install with Docker in VS Code](https://img.shields.io/badge/VS_Code-Docker-0098FF?style=flat-square&logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=helper&config=%7B%22type%22%3A%22stdio%22%2C%22command%22%3A%22/Users/username/go/bin/mcp-project-helper%22%2C%22args%22%3A%5B%22-transport%22%2C%22stdio%22%2C%22-prompts-path%22%2C%22/path/to/your/custom/prompts%22%5D%7D) 
+
 ```
 go install github.com/ad/mcp-project-helper@latest
-````
+```
 
 Добавьте в `settings.json`:
 ```json
