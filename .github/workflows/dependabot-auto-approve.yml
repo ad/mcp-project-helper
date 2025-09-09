@@ -1,3 +1,4 @@
+
 name: Dependabot Auto Manage
 on: 
   pull_request:
@@ -46,18 +47,20 @@ jobs:
           
       - name: Simulate PR event for manual dispatch
         if: github.event_name == 'workflow_dispatch'
+        id: pr_info
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Get PR details and set environment variables
+          # Get PR details and set outputs
           PR_DATA=$(gh pr view ${{ github.event.inputs.pr_number }} --repo "${{ github.repository }}" --json number,url,author)
-          echo "GITHUB_EVENT_NAME=pull_request" >> $GITHUB_ENV
-          echo "GITHUB_PR_NUMBER=$(echo $PR_DATA | jq -r '.number')" >> $GITHUB_ENV
-          echo "GITHUB_PR_URL=$(echo $PR_DATA | jq -r '.url')" >> $GITHUB_ENV
+          echo "pr_number=$(echo $PR_DATA | jq -r '.number')" >> $GITHUB_OUTPUT
+          echo "pr_url=$(echo $PR_DATA | jq -r '.url')" >> $GITHUB_OUTPUT
           
       - uses: ad/dependabot-auto-approve@v1
         with:
           dependency-type: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dependency_type || 'direct:production' }}
           merge-method: 'squash'
           add-label: ${{ github.event_name == 'workflow_dispatch' && 'manual-approval' || 'dependabot-approved' }}
+          pr-number: ${{ github.event_name == 'workflow_dispatch' && steps.pr_info.outputs.pr_number || '' }}
+          pr-url: ${{ github.event_name == 'workflow_dispatch' && steps.pr_info.outputs.pr_url || '' }}
           github-token: ${{ secrets.GH_TOKEN }}  
