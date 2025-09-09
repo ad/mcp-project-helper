@@ -56,7 +56,7 @@ jobs:
           echo "pr_number=$(echo $PR_DATA | jq -r '.number')" >> $GITHUB_OUTPUT
           echo "pr_url=$(echo $PR_DATA | jq -r '.url')" >> $GITHUB_OUTPUT
           
-      - uses: ad/dependabot-auto-approve@v1.3.0
+      - uses: ad/dependabot-auto-approve@v1.3.1
         with:
           dependency-type: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.dependency_type || 'direct:production' }}
           merge-method: 'squash'
