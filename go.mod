@@ -1,8 +1,8 @@
 module github.com/ad/mcp-project-helper
 
-go 1.24
+go 1.25.5
 
-require github.com/mark3labs/mcp-go v0.48.0
+require github.com/mark3labs/mcp-go v0.49.0
 
 require (
 	github.com/google/jsonschema-go v0.4.2 // indirect
